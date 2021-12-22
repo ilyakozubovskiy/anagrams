@@ -1,9 +1,12 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AnagramTask
 {
     public class Anagram
     {
+        private readonly string sourceWord;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Anagram"/> class.
         /// </summary>
@@ -12,7 +15,17 @@ namespace AnagramTask
         /// <exception cref="ArgumentException">Thrown when  source word is empty.</exception>
         public Anagram(string sourceWord)
         {
-            throw new NotImplementedException("You need to implement this function.");
+            if (sourceWord == null)
+            {
+                throw new ArgumentNullException(nameof(sourceWord));
+            }
+
+            if (sourceWord.Length == 0)
+            {
+                throw new ArgumentException($"{nameof(sourceWord)} cannot be empty.");
+            }
+
+            this.sourceWord = sourceWord;
         }
 
         /// <summary>
@@ -23,7 +36,41 @@ namespace AnagramTask
         /// <exception cref="ArgumentNullException">Thrown when candidates list is null.</exception>
         public string[] FindAnagrams(string[] candidates)
         {
-            throw new NotImplementedException("You need to implement this function.");
+            if (candidates == null)
+            {
+                throw new ArgumentNullException(nameof(candidates));
+            }
+
+            List<string> result = new List<string>();
+
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                if (this.sourceWord.ToUpperInvariant() != candidates[i].ToUpperInvariant() && this.sourceWord.Length == candidates[i].Length)
+                {
+                    var source1 = this.sourceWord.ToUpperInvariant().ToCharArray();
+                    var source2 = candidates[i].ToUpperInvariant().ToCharArray();
+
+                    Array.Sort(source1);
+                    Array.Sort(source2);
+
+                    bool isMatch = true;
+                    for (int j = 0; j < source1.Length; j++)
+                    {
+                        if (source1[j] != source2[j])
+                        {
+                            isMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (isMatch)
+                    {
+                        result.Add(candidates[i]);
+                    }
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }
